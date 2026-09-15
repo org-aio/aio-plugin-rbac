@@ -46,7 +46,7 @@ pub(crate) fn RolesPage() -> Element {
                     let role = context.row;
                     match context.column.key.as_str() {
                         "id" => rsx! { div { class: "admin-actions", code { class: "admin-code", "{role.id}" } if is_system_role(&role.id) { Badge { variant: BadgeVariant::Outline, "内置" } } } },
-                        "permissions" => rsx! { div { class: "admin-badges", for permission in role.permissions { Badge { variant: BadgeVariant::Outline, title: permission.clone(), "{permission_label(&permission)}" } } } },
+                        "permissions" => rsx! { div { class: "admin-badges", for permission in role.permissions { Badge { variant: BadgeVariant::Outline, title: permission_label(&permission), "{permission_label(&permission)}" } } } },
                         "members" => rsx! { "{role.member_count}" },
                         "actions" => { let edit = role.clone(); rsx! { div { class: "admin-actions",
                             if is_system_role(&role.id) { span { title: "内置角色只读", aria_label: "内置角色只读", LockKeyhole {} } }

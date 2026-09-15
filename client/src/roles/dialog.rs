@@ -33,10 +33,10 @@ pub(super) fn RoleEditor(
             fieldset { class: "admin-options", legend { "权限" }
                 for permission in permissions {
                     label { class: "admin-option", key: "{permission}",
-                        Checkbox { aria_label: "权限 {permission}", checked: Some(if selected().contains(&permission) { CheckboxState::Checked } else { CheckboxState::Unchecked }),
+                        Checkbox { aria_label: "{permission_label(&permission)}", checked: Some(if selected().contains(&permission) { CheckboxState::Checked } else { CheckboxState::Unchecked }),
                             on_checked_change: { let value = permission.clone(); move |state| { selected.write().retain(|p| p != &value); if bool::from(state) { selected.write().push(value.clone()); } } },
                         }
-                        span { span { "{permission_label(&permission)}" } code { class: "admin-meta", "{permission}" } }
+                        span { "{permission_label(&permission)}" }
                     }
                 }
             }
