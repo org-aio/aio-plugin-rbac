@@ -37,6 +37,7 @@ pub(crate) fn RolesPage() -> Element {
                 Button { onclick: move |_| editor.set(Some(None)), Plus {} "新建角色" }
             }
             if let Some(message) = feedback() { StatusMessage { message } }
+            p { class: "admin-meta", "已安装插件的权限由租户所有成员自动获得，无需在角色中配置。" }
             CollectionTable { label: "角色", rows: data.roles,
                 columns: vec![DataTableColumn::leaf("id", "角色 ID").width(240), DataTableColumn::leaf("permissions", "权限").width(430), DataTableColumn::leaf("members", "用户数").width(100).align(DataTableAlign::End), DataTableColumn::leaf("actions", "操作").width(110)],
                 row_key: |role: RoleItem| role.id,

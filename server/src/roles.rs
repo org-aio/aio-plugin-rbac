@@ -18,6 +18,12 @@ fn validate(role: &str, permissions: &[String]) -> Result<Vec<String>> {
         !permissions.is_empty() && permissions.len() <= 128,
         "角色需要 1 到 128 项权限"
     );
+    ensure!(
+        permissions
+            .iter()
+            .all(|permission| !permission.starts_with("component:")),
+        "插件权限由租户安装自动获得，无需分配给角色"
+    );
     let mut permissions = permissions.to_vec();
     ensure!(
         permissions.iter().all(|p| p.len() <= 128
@@ -116,5 +122,6 @@ mod tests {
         assert!(validate("bad/id", &["file:manage".into()]).is_err());
         assert!(validate("editor", &["file:".into()]).is_err());
         assert!(validate("editor", &[]).is_err());
+        assert!(validate("editor", &["component:source:screen.edit".into()]).is_err());
     }
 }

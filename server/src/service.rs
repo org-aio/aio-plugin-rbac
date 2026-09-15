@@ -57,7 +57,10 @@ impl AccessControlService {
             .bind(tenant_id).fetch_all(&self.pool).await?;
         let mut permissions = BTreeMap::<String, Vec<String>>::new();
         for (role, permission) in permission_rows {
-            permissions.entry(role).or_default().push(permission);
+            let values = permissions.entry(role).or_default();
+            if !permission.starts_with("component:") {
+                values.push(permission);
+            }
         }
         let roles = permissions
             .into_iter()
