@@ -11,6 +11,7 @@ anyhow = "1.0.99"
 axum = "0.8.6"
 dill = "0.15.0"
 sqlx = { version = "0.8.6", default-features = false, features = ["postgres", "runtime-tokio-rustls"] }
+uuid = { version = "1.18.1", features = ["v4"] }
 
 [lints]
 workspace = true

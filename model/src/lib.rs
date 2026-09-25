@@ -4,8 +4,46 @@ use serde::{Deserialize, Serialize};
 pub struct AccessControlView {
     pub users: Vec<UserItem>,
     pub roles: Vec<RoleItem>,
+    pub departments: Vec<OrganizationItem>,
+    pub posts: Vec<OrganizationItem>,
     pub current_user_id: String,
     pub grantable_permissions: Vec<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct OrganizationItem {
+    pub id: String,
+    pub code: String,
+    pub name: String,
+    pub parent_id: Option<String>,
+    pub leader: String,
+    pub phone: String,
+    pub email: String,
+    pub sort_order: i32,
+    pub status: String,
+    pub remark: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct SaveDepartmentRequest {
+    pub id: Option<String>,
+    pub parent_id: Option<String>,
+    pub name: String,
+    pub leader: String,
+    pub phone: String,
+    pub email: String,
+    pub sort_order: i32,
+    pub status: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct SavePostRequest {
+    pub id: Option<String>,
+    pub code: String,
+    pub name: String,
+    pub sort_order: i32,
+    pub status: String,
+    pub remark: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

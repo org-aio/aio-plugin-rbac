@@ -1,4 +1,5 @@
 mod http;
+mod organization;
 mod roles;
 mod users;
 
@@ -30,6 +31,24 @@ impl ApplicationPlugin for AccessControlPlugin {
                 menu_path: system_management_path(),
                 required_permission: Some("rbac:manage"),
                 render: roles::RolesPage,
+            },
+            ApplicationPage {
+                id: "departments",
+                label: "部门管理",
+                icon: Some("building_2"),
+                scene: system_scene(),
+                menu_path: system_management_path(),
+                required_permission: Some("rbac:manage"),
+                render: organization::DepartmentsPage,
+            },
+            ApplicationPage {
+                id: "posts",
+                label: "岗位管理",
+                icon: Some("briefcase"),
+                scene: system_scene(),
+                menu_path: system_management_path(),
+                required_permission: Some("rbac:manage"),
+                render: organization::PostsPage,
             },
         ]
     }

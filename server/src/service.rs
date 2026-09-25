@@ -83,6 +83,8 @@ impl AccessControlService {
         Ok(AccessControlView {
             users,
             roles,
+            departments: self.departments(tenant_id).await?,
+            posts: self.posts(tenant_id).await?,
             current_user_id: actor_id.to_owned(),
             grantable_permissions,
         })

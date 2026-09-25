@@ -3,7 +3,8 @@ use std::sync::Arc;
 use aio_plugin_identity_server::{IdentityService, SessionContext};
 use aio_plugin_rbac_model::{
     AccessControlErrorResponse, AccessControlResponse, AccessControlView, AssignRoleRequest,
-    CreateRoleRequest, CreateUserRequest, UpdateMemberRequest, UpdateMemberRolesRequest,
+    CreateRoleRequest, CreateUserRequest, SaveDepartmentRequest, SavePostRequest,
+    UpdateMemberRequest, UpdateMemberRolesRequest,
 };
 use axum::{
     Json, Router,
@@ -33,6 +34,13 @@ pub fn router(access: Arc<AccessControlService>, identity: Arc<IdentityService>)
         .route("/api/rbac/users/{id}/roles", put(set_member_roles))
         .route("/api/rbac/roles", post(create_role))
         .route("/api/rbac/roles/{id}", put(update_role).delete(delete_role))
+        .route("/api/rbac/departments", post(create_department))
+        .route(
+            "/api/rbac/departments/{id}",
+            put(update_department).delete(delete_department),
+        )
+        .route("/api/rbac/posts", post(create_post))
+        .route("/api/rbac/posts/{id}", put(update_post).delete(delete_post))
         .route("/api/rbac/assignments", post(assign))
         .with_state(AccessControlState { access, identity })
 }
@@ -97,6 +105,88 @@ async fn create_role(
             &request.permissions,
             true,
         )
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn create_department(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Json(request): Json<SaveDepartmentRequest>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    state
+        .access
+        .save_department(&session.tenant_id, &session.user_id, request)
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn update_department(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(mut request): Json<SaveDepartmentRequest>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    request.id = Some(id);
+    state
+        .access
+        .save_department(&session.tenant_id, &session.user_id, request)
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn delete_department(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    state
+        .access
+        .delete_department(&session.tenant_id, &session.user_id, &id)
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn create_post(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Json(request): Json<SavePostRequest>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    state
+        .access
+        .save_post(&session.tenant_id, &session.user_id, request)
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn update_post(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(mut request): Json<SavePostRequest>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    request.id = Some(id);
+    state
+        .access
+        .save_post(&session.tenant_id, &session.user_id, request)
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn delete_post(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    state
+        .access
+        .delete_post(&session.tenant_id, &session.user_id, &id)
         .await?;
     Ok(StatusCode::NO_CONTENT)
 }

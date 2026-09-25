@@ -109,6 +109,7 @@ dependencies = [
  "dill",
  "sqlx",
  "tokio",
+ "uuid",
 ]
 
 [[package]]

@@ -61,6 +61,32 @@ async fn tenant_role_crud_preserves_authority_and_memberships() -> Result<()> {
         assert!(service.save_role(&tenant, &member, "denied", &["workspace:view".into()], true).await.is_err());
         service.delete_role(&tenant, &a, "editor").await?;
         service.delete_role(&tenant, &a, "limited-manager").await?;
+        service.save_department(&tenant, &a, aio_plugin_rbac_model::SaveDepartmentRequest {
+            id: None,
+            parent_id: None,
+            name: "工程部".into(),
+            leader: "负责人".into(),
+            phone: "10086".into(),
+            email: "dept@example.com".into(),
+            sort_order: 1,
+            status: "active".into(),
+        }).await?;
+        let department = service.departments(&tenant).await?.into_iter().next().expect("部门应存在");
+        assert_eq!(department.name, "工程部");
+        assert!(service.departments(&other).await?.is_empty());
+        service.save_post(&tenant, &a, aio_plugin_rbac_model::SavePostRequest {
+            id: None,
+            code: "site-engineer".into(),
+            name: "现场工程师".into(),
+            sort_order: 1,
+            status: "active".into(),
+            remark: "测试岗位".into(),
+        }).await?;
+        let post = service.posts(&tenant).await?.into_iter().next().expect("岗位应存在");
+        assert_eq!(post.code, "site-engineer");
+        assert!(service.posts(&other).await?.is_empty());
+        service.delete_post(&tenant, &a, &post.id).await?;
+        service.delete_department(&tenant, &a, &department.id).await?;
         sqlx::query("INSERT INTO auth_sessions (id, user_id, tenant_id, expires_at) VALUES ($1, $2, $3, now() + interval '1 hour')")
             .bind(&member).bind(&member).bind(&tenant).execute(&pool).await?;
         service.remove_member(&tenant, &a, &member).await?;
@@ -75,6 +101,8 @@ async fn tenant_role_crud_preserves_authority_and_memberships() -> Result<()> {
     for table in [
         "auth_sessions",
         "tenant_member_roles",
+        "organization_departments",
+        "organization_posts",
         "tenant_memberships",
         "role_permissions",
     ] {
