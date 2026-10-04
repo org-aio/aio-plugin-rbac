@@ -90,6 +90,13 @@ pub struct UpdateMemberRolesRequest {
     pub roles: Vec<String>,
 }
 
+/// 管理员为租户成员设置新密码；不需要旧密码。
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ResetMemberPasswordRequest {
+    pub new_password: String,
+}
+
 pub fn is_system_role(id: &str) -> bool {
     matches!(id, "platform-admin" | "tenant-admin" | "member")
 }

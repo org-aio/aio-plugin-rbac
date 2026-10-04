@@ -73,6 +73,21 @@ impl AccessControlService {
         Ok(())
     }
 
+    /// 校验当前管理员是否有权为该成员重置密码。
+    /// 只做权限判定，不写库；实际的密码写入由身份服务完成。
+    pub async fn authorize_member_password_reset(
+        &self,
+        tenant: &str,
+        actor: &str,
+        user: &str,
+    ) -> Result<()> {
+        let mut tx = self.mutation(tenant, actor).await?;
+        let roles = member_roles(&mut tx, tenant, user).await?;
+        check_roles(&mut tx, tenant, actor, &roles).await?;
+        tx.commit().await?;
+        Ok(())
+    }
+
     pub async fn set_member_roles(
         &self,
         tenant: &str,

@@ -3,8 +3,8 @@ use std::sync::Arc;
 use aio_plugin_identity_server::{IdentityService, SessionContext};
 use aio_plugin_rbac_model::{
     AccessControlErrorResponse, AccessControlResponse, AccessControlView, AssignRoleRequest,
-    CreateRoleRequest, CreateUserRequest, SaveDepartmentRequest, SavePostRequest,
-    UpdateMemberRequest, UpdateMemberRolesRequest,
+    CreateRoleRequest, CreateUserRequest, ResetMemberPasswordRequest, SaveDepartmentRequest,
+    SavePostRequest, UpdateMemberRequest, UpdateMemberRolesRequest,
 };
 use axum::{
     Json, Router,
@@ -32,6 +32,7 @@ pub fn router(access: Arc<AccessControlService>, identity: Arc<IdentityService>)
             put(update_member).delete(remove_member),
         )
         .route("/api/rbac/users/{id}/roles", put(set_member_roles))
+        .route("/api/rbac/users/{id}/password", post(reset_member_password))
         .route("/api/rbac/roles", post(create_role))
         .route("/api/rbac/roles/{id}", put(update_role).delete(delete_role))
         .route("/api/rbac/departments", post(create_department))
@@ -258,6 +259,24 @@ async fn set_member_roles(
             &request.roles,
             false,
         )
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+async fn reset_member_password(
+    State(state): State<AccessControlState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(request): Json<ResetMemberPasswordRequest>,
+) -> Result<StatusCode, AccessControlHttpError> {
+    let session = authenticate_manager(&state, &headers).await?;
+    state
+        .access
+        .authorize_member_password_reset(&session.tenant_id, &session.user_id, &id)
+        .await?;
+    state
+        .identity
+        .reset_password(&id, &request.new_password)
         .await?;
     Ok(StatusCode::NO_CONTENT)
 }
