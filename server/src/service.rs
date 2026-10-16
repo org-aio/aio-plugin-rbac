@@ -40,6 +40,11 @@ impl AccessControlService {
         Ok(())
     }
 
+    /// 等待本代连接归还并关闭连接池；角色、权限和成员关系不被删除。
+    pub async fn shutdown(&self) {
+        self.pool.close().await;
+    }
+
     pub async fn view(&self, tenant_id: &str, actor_id: &str) -> Result<AccessControlView> {
         let rows = sqlx::query_as::<_, (String, String, String, Vec<String>)>(
             "SELECT u.id, u.account, m.display_name, COALESCE(array_agg(r.role_id ORDER BY r.role_id) FILTER (WHERE r.role_id IS NOT NULL), ARRAY[]::text[]) FROM tenant_memberships m JOIN identity_users u ON u.id = m.user_id LEFT JOIN tenant_member_roles r ON r.tenant_id = m.tenant_id AND r.user_id = m.user_id WHERE m.tenant_id = $1 GROUP BY u.id, u.account, m.display_name ORDER BY u.account")
