@@ -11,7 +11,7 @@ pub async fn run() -> Result<()> {
     let host = Host::from_env()?;
     let identity = Arc::new(host.identity()?);
     let router = host
-        .protect(crate::routes::router(identity))
+        .protect(crate::plugin_routes::router(identity))
         .route("/health", get(|| async { "ok" }))
         .route("/aio/describe", get(describe));
     host.serve(router).await

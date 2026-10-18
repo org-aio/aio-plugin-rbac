@@ -1,4 +1,14 @@
 #![forbid(unsafe_code)]
 
 pub mod hosting;
-pub mod routes;
+mod members;
+mod organization;
+mod plugin_routes;
+mod policy;
+mod roles;
+mod service;
+
+#[cfg(test)]
+mod tests;
+
+pub use service::AccessControlService;
