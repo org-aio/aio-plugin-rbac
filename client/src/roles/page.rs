@@ -62,7 +62,7 @@ pub(crate) fn RolesPage() -> Element {
         }
         if let Some(value) = editor() { RoleEditor { value, permissions: data.grantable_permissions, on_close: move |_| editor.set(None), on_saved: move |_| { editor.set(None); feedback.set(Some("角色已保存".into())); revision += 1; } } }
         if let Some(value) = removal() { DeleteRecordsDialog { title: "删除角色", items: vec![value], item_label: |role: RoleItem| role.id,
-            delete: |role: RoleItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/api/rbac/roles/{}", role.id)).await }) },
+            delete: |role: RoleItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/rbac/roles/{}", role.id)).await }) },
             on_close: move |_| removal.set(None), on_deleted: move |_| { feedback.set(Some("角色已删除".into())); revision += 1; },
         } }
     }

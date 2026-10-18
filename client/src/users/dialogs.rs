@@ -36,8 +36,8 @@ pub(super) fn UserEditor(
             save: move |_| -> AsyncResult<()> {
                 let id = id.clone(); let name = name(); let account = account(); let password = password();
                 Box::pin(async move { match id {
-                    Some(id) => http::save(&format!("/api/rbac/users/{id}"), &UpdateMemberRequest { display_name: name }, false).await,
-                    None => http::save("/api/rbac/users", &CreateUserRequest { account, display_name: name, password }, true).await,
+                    Some(id) => http::save(&format!("/rbac/users/{id}"), &UpdateMemberRequest { display_name: name }, false).await,
+                    None => http::save("/rbac/users", &CreateUserRequest { account, display_name: name, password }, true).await,
                 } })
             },
             label { class: "admin-field", span { "账号" } Input { aria_label: "用户账号", value: account(), disabled: editing, required: true, maxlength: "64", oninput: move |event: FormEvent| account.set(event.value()) } }
@@ -62,7 +62,7 @@ pub(super) fn UserPassword(
                 let id = value.id.clone(); let new_password = password(); let confirmation = confirmation();
                 Box::pin(async move {
                     if new_password != confirmation { return Err("两次输入的新密码不一致".into()); }
-                    http::save(&format!("/api/rbac/users/{id}/password"), &ResetMemberPasswordRequest { new_password }, true).await
+                    http::save(&format!("/rbac/users/{id}/password"), &ResetMemberPasswordRequest { new_password }, true).await
                 })
             },
             label { class: "admin-field", span { "新密码" } Input { aria_label: "新密码", r#type: "password", autocomplete: "new-password", required: true, minlength: 8, value: password(), oninput: move |event: FormEvent| password.set(event.value()) } }
@@ -83,7 +83,7 @@ pub(super) fn UserRoles(
         EditorDialog { title: "分配角色", description: format!("{} (@{})", value.display_name, value.account), on_close, on_saved,
             save: move |_| -> AsyncResult<()> {
                 let id = value.id.clone(); let roles = selected();
-                Box::pin(async move { http::save(&format!("/api/rbac/users/{id}/roles"), &UpdateMemberRolesRequest { roles }, false).await })
+                Box::pin(async move { http::save(&format!("/rbac/users/{id}/roles"), &UpdateMemberRolesRequest { roles }, false).await })
             },
             div { class: "admin-options",
                 for role in roles {

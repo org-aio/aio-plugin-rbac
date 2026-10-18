@@ -1,8 +1,23 @@
-[plugin.client]
-path = "client"
+schema_version = 2
 
-[plugin.server]
-path = "server"
+[plugin]
+required_permissions = []
 
-[plugin.dependencies]
-identity = ">=0.1.0"
+[plugin.marketplace]
+title = "用户与权限"
+summary = "独立交付的用户、角色、部门与岗位管理，权限判定仍由宿主执行。"
+license = "MIT"
+tags = ["system", "rbac", "identity"]
+
+[plugin.runtime]
+artifact = "dist/rbac-server"
+host_version = ">=2026.10.17"
+
+[plugin.runtime.process]
+image = "sha256:48a661b5e5f4560287dfc254e948825538d0f7a1379616495a424ed375afd31f"
+
+[plugin.frontend]
+path = "dist/frontend"
+
+[plugin.capabilities]
+rbac_provider = true

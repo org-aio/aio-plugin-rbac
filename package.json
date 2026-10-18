@@ -1,0 +1,6 @@
+{
+  "name": "aio-plugin-rbac",
+  "private": true,
+  "scripts": { "test:ui": "node tests/browser/rbac.cjs" },
+  "devDependencies": { "playwright": "1.62.0" }
+}

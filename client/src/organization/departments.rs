@@ -66,7 +66,7 @@ pub(crate) fn DepartmentsPage() -> Element {
             DepartmentEditor { value, departments: data.departments, on_close: move |_| editor.set(None), on_saved: move |_| { editor.set(None); feedback.set(Some("部门已保存".into())); revision += 1; } }
         }
         if let Some(value) = removal() { DeleteRecordsDialog { title: "删除部门", items: vec![value], item_label: |department: OrganizationItem| department.name,
-            delete: |department: OrganizationItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/api/rbac/departments/{}", department.id)).await }) },
+            delete: |department: OrganizationItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/rbac/departments/{}", department.id)).await }) },
             on_close: move |_| removal.set(None), on_deleted: move |_| { feedback.set(Some("部门已删除".into())); revision += 1; },
         } }
     }

@@ -26,7 +26,7 @@ pub(super) fn RoleEditor(
         EditorDialog { title: if editing { "编辑角色" } else { "新建角色" }, description: "角色权限在当前租户生效。", on_close, on_saved,
             save: move |_| -> AsyncResult<()> {
                 let body = CreateRoleRequest { role_id: role_id(), permissions: selected() };
-                let path = if editing { format!("/api/rbac/roles/{}", body.role_id) } else { "/api/rbac/roles".into() };
+                let path = if editing { format!("/rbac/roles/{}", body.role_id) } else { "/rbac/roles".into() };
                 Box::pin(async move { http::save(&path, &body, !editing).await })
             },
             label { class: "admin-field", span { "角色 ID" } Input { aria_label: "角色 ID", value: role_id(), disabled: editing, required: true, maxlength: "64", oninput: move |event: FormEvent| role_id.set(event.value()) } }

@@ -59,7 +59,7 @@ pub(crate) fn PostsPage() -> Element {
             PostEditor { value, on_close: move |_| editor.set(None), on_saved: move |_| { editor.set(None); feedback.set(Some("岗位已保存".into())); revision += 1; } }
         }
         if let Some(value) = removal() { DeleteRecordsDialog { title: "删除岗位", items: vec![value], item_label: |item: OrganizationItem| item.name,
-            delete: |item: OrganizationItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/api/rbac/posts/{}", item.id)).await }) },
+            delete: |item: OrganizationItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/rbac/posts/{}", item.id)).await }) },
             on_close: move |_| removal.set(None), on_deleted: move |_| { feedback.set(Some("岗位已删除".into())); revision += 1; },
         } }
     }

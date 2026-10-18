@@ -65,7 +65,7 @@ pub(super) fn DepartmentEditor(
                     sort_order: sort_order(),
                     status: "active".into(),
                 };
-                let path = id.as_ref().map_or_else(|| "/api/rbac/departments".into(), |id| format!("/api/rbac/departments/{id}"));
+                let path = id.as_ref().map_or_else(|| "/rbac/departments".into(), |id| format!("/rbac/departments/{id}"));
                 Box::pin(async move { http::save(&path, &body, !editing).await })
             },
             label { class: "admin-field", span { "部门名称" } Input { aria_label: "部门名称", value: name(), required: true, maxlength: "120", oninput: move |event: FormEvent| name.set(event.value()) } }
@@ -120,7 +120,7 @@ pub(super) fn PostEditor(
             on_saved,
             save: move |_| -> AsyncResult<()> {
                 let body = SavePostRequest { id: id.clone(), code: code(), name: name(), sort_order: sort_order(), status: "active".into(), remark: remark() };
-                let path = id.as_ref().map_or_else(|| "/api/rbac/posts".into(), |id| format!("/api/rbac/posts/{id}"));
+                let path = id.as_ref().map_or_else(|| "/rbac/posts".into(), |id| format!("/rbac/posts/{id}"));
                 Box::pin(async move { http::save(&path, &body, !editing).await })
             },
             label { class: "admin-field", span { "岗位编码" } Input { aria_label: "岗位编码", value: code(), disabled: editing, required: true, maxlength: "64", oninput: move |event: FormEvent| code.set(event.value()) } }

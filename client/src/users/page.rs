@@ -66,7 +66,7 @@ pub(crate) fn UsersPage() -> Element {
         if let Some(value) = resets() { UserPassword { value, on_close: move |_| resets.set(None), on_saved: move |_| { resets.set(None); feedback.set(Some("密码已重置，该账号原有会话已失效".into())); revision += 1; } } }
         if let Some(value) = assignments() { UserRoles { value, roles: data.roles, on_close: move |_| assignments.set(None), on_saved: move |_| { assignments.set(None); feedback.set(Some("角色分配已更新".into())); revision += 1; } } }
         if let Some(items) = removal() { DeleteRecordsDialog { title: "移出租户", warning: "移除当前租户成员关系并结束其会话，保留平台账号和其他租户数据。", items,
-            item_label: |user: UserItem| format!("{} (@{})", user.display_name, user.account), delete: |user: UserItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/api/rbac/users/{}", user.id)).await }) },
+            item_label: |user: UserItem| format!("{} (@{})", user.display_name, user.account), delete: |user: UserItem| -> AsyncResult<()> { Box::pin(async move { http::delete(&format!("/rbac/users/{}", user.id)).await }) },
             on_close: move |_| removal.set(None), on_deleted: move |count| { selected.set(Vec::new()); feedback.set(Some(format!("已移出 {count} 位用户"))); revision += 1; },
         } }
     }
