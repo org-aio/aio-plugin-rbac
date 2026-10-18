@@ -1,7 +1,8 @@
 schema_version = 2
 
 [plugin]
-required_permissions = []
+permissions = ["rbac:manage"]
+required_permissions = ["rbac:manage"]
 
 [plugin.marketplace]
 title = "用户与权限"
@@ -21,3 +22,4 @@ path = "dist/frontend"
 
 [plugin.capabilities]
 rbac_provider = true
+identity_provider = true

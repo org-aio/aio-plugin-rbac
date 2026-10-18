@@ -7,7 +7,7 @@ rust-version.workspace = true
 
 [dependencies]
 aio-plugin-rbac-model = { path = "../model" }
-az-plugin-process = { git = "https://github.com/org-aio/aio-platform.git", rev = "1364f3c" }
+az-plugin-process = { git = "https://github.com/org-aio/aio-platform.git", rev = "1364f3cf137613406b7a5e14e2fbb38b00172faf" }
 anyhow = "1.0.99"
 axum = "0.8.6"
 dill = "0.15.0"
