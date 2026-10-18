@@ -113,7 +113,9 @@ def pages():
 
 
 def mount(source, page='users', version=None):
-    value = success('/api/runtime/frontend/mount', {'page_id': 'component:%s:%s' % (source, page)})
+    page_id = 'component:%s:%s' % (source, page)
+    value = success('/api/runtime/frontend/mount', {'page_id': page_id})
+    assert 'page=' + urllib.parse.quote(page_id, safe='') in value['src'], value['src']
     if version is not None:
         path = urllib.parse.urlsplit(value['src'])
         status, _, body = request(path.path + ('?' + path.query if path.query else ''))

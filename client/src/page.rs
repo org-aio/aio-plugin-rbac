@@ -24,19 +24,22 @@ enum Section {
     Posts,
 }
 
-/// 从宿主渲染的页面 ID 推断当前区块；未知页面回退到用户管理。
+/// 从宿主下发的页面 ID 推断当前区块；未知页面回退到用户管理。
 fn read_view() -> Option<Section> {
     let location = web_sys::window()?.location();
-    let hash = location.hash().unwrap_or_default();
-    let path = location.pathname().unwrap_or_default();
-    let marker = format!("{hash}{path}");
-    Some(if marker.contains("roles") {
-        Section::Roles
-    } else if marker.contains("departments") {
-        Section::Departments
-    } else if marker.contains("posts") {
-        Section::Posts
-    } else {
-        Section::Users
+    let search = location.search().unwrap_or_default();
+    let page = search
+        .trim_start_matches('?')
+        .split('&')
+        .find_map(|pair| pair.strip_prefix("page="))
+        .and_then(|value| urlencoding::decode(value).ok())
+        .map(|value| value.into_owned())
+        .unwrap_or_default();
+    let view = page.rsplit(':').next().unwrap_or_default();
+    Some(match view {
+        "roles" => Section::Roles,
+        "departments" => Section::Departments,
+        "posts" => Section::Posts,
+        _ => Section::Users,
     })
 }
