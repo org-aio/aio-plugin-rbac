@@ -195,7 +195,7 @@ dependencies = [
 [[package]]
 name = "az-plugin-contract"
 version = "2026.5.10"
-source = "git+https://github.com/org-aio/aio-platform.git?rev=1364f3cf137613406b7a5e14e2fbb38b00172faf#1364f3cf137613406b7a5e14e2fbb38b00172faf"
+source = "git+https://github.com/org-aio/aio-platform.git?rev=0325d0c699b49a8c046d472e5c86e392e5bef348#0325d0c699b49a8c046d472e5c86e392e5bef348"
 dependencies = [
  "anyhow",
  "serde",
@@ -206,7 +206,7 @@ dependencies = [
 [[package]]
 name = "az-plugin-process"
 version = "2026.5.10"
-source = "git+https://github.com/org-aio/aio-platform.git?rev=1364f3cf137613406b7a5e14e2fbb38b00172faf#1364f3cf137613406b7a5e14e2fbb38b00172faf"
+source = "git+https://github.com/org-aio/aio-platform.git?rev=0325d0c699b49a8c046d472e5c86e392e5bef348#0325d0c699b49a8c046d472e5c86e392e5bef348"
 dependencies = [
  "anyhow",
  "axum",
@@ -3835,7 +3835,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
