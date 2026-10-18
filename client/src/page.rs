@@ -35,11 +35,32 @@ fn read_view() -> Option<Section> {
         .and_then(|value| urlencoding::decode(value).ok())
         .map(|value| value.into_owned())
         .unwrap_or_default();
-    let view = page.rsplit(':').next().unwrap_or_default();
-    Some(match view {
+    Some(section_from_page(&page))
+}
+
+/// 页面 ID 形如 `component:<source>:<page>`；按最后一个冒号后的名称选择视图。
+fn section_from_page(page: &str) -> Section {
+    match page.rsplit(':').next().unwrap_or_default() {
         "roles" => Section::Roles,
         "departments" => Section::Departments,
         "posts" => Section::Posts,
         _ => Section::Users,
-    })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Section, section_from_page};
+
+    #[test]
+    fn page_id_selects_the_expected_view() {
+        assert_eq!(section_from_page("component:abc:users"), Section::Users);
+        assert_eq!(section_from_page("component:abc:roles"), Section::Roles);
+        assert_eq!(
+            section_from_page("component:abc:departments"),
+            Section::Departments
+        );
+        assert_eq!(section_from_page("component:abc:posts"), Section::Posts);
+        assert_eq!(section_from_page("unknown"), Section::Users);
+    }
 }
